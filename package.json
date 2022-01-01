@@ -1,0 +1,115 @@
+{
+	"name": "typescript-template",
+	"version": "0.1.0",
+	"description": "An opiniated template for Typescript + ESM projects.",
+	"author": {
+		"name": "Vedant K",
+		"url": "https://github.com/gamemaker1"
+	},
+	"license": "ISC",
+	"homepage": "https://github.com/gamemaker1/typescript-template",
+	"repository": "https://github.com/gamemaker1/typescript-template",
+	"type": "module",
+	"exports": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist",
+		"readme.md",
+		"license.md",
+		"package.json",
+		"tsconfig.json",
+		"pnpm-lock.yaml"
+	],
+	"scripts": {
+		"clean": "del-cli dist/ coverage/ *.log *.tmp *.tgz *.bak",
+		"build:lib": "esbuild --bundle --platform=node --format=esm --outfile=dist/index.js source/index.ts",
+		"build:types": "dts-bundle-generator --out-file=dist/index.d.ts source/index.ts",
+		"compile": "run-s clean build:*",
+		"lint:code": "xo",
+		"lint:rest": "prettier --check --ignore-path=.gitignore .",
+		"lint": "run-s lint:*",
+		"autofix:code": "xo --fix",
+		"autofix:rest": "prettier --write --ignore-path=.gitignore .",
+		"autofix": "run-s autofix:*",
+		"test:lib": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" jest",
+		"test": "run-s test:*",
+		"pre-commit": "lint-staged",
+		"prepare": "node scripts/setup.js && husky install config/husky",
+		"actual-prepare": "run-s compile && husky install config/husky"
+	},
+	"engines": {
+		"node": "^14 || ^16",
+		"pnpm": "^6"
+	},
+	"devDependencies": {
+		"@types/jest": "^27.0.3",
+		"@types/node": "^16.11.11",
+		"chalk": "^5.0.0",
+		"cross-env": "^7.0.3",
+		"del-cli": "^4.0.1",
+		"dts-bundle-generator": "^6.2.0",
+		"enquirer": "^2.3.6",
+		"esbuild": "^0.14.10",
+		"execa": "^6.0.0",
+		"husky": "^7.0.4",
+		"jest": "^27.4.2",
+		"lint-staged": "^12.1.2",
+		"npm-run-all": "^4.1.5",
+		"prettier": "^2.5.1",
+		"replace-in-file": "^6.3.2",
+		"serve": "^13.0.2",
+		"ts-jest": "^27.0.7",
+		"ts-node": "^10.4.0",
+		"tsconfig-paths": "^3.12.0",
+		"typescript": "^4.5.2",
+		"xo": "^0.47.0"
+	},
+	"xo": {
+		"prettier": true,
+		"rules": {
+			"@typescript-eslint/no-empty-function": 0,
+			"@typescript-eslint/no-confusing-void-expression": 0,
+			"@typescript-eslint/consistent-indexed-object-style": [
+				"error",
+				"index-signature"
+			]
+		}
+	},
+	"prettier": {
+		"semi": false,
+		"useTabs": true,
+		"singleQuote": true,
+		"bracketSpacing": true,
+		"proseWrap": "always",
+		"endOfLine": "lf"
+	},
+	"jest": {
+		"verbose": true,
+		"preset": "ts-jest/presets/default-esm",
+		"globals": {
+			"ts-jest": {
+				"useESM": true
+			}
+		},
+		"collectCoverage": true,
+		"collectCoverageFrom": [
+			"source/**/*.ts"
+		],
+		"testTimeout": 30000,
+		"testMatch": [
+			"**/test/**/*-test.[jt]s"
+		],
+		"moduleFileExtensions": [
+			"js",
+			"json",
+			"ts"
+		],
+		"moduleNameMapper": {
+			"^(\\.{1,2}/.*)\\.js$": "$1"
+		}
+	},
+	"lint-staged": {
+		"{source,test}/**/*.ts": "xo --fix",
+		"*.{yaml,json,md}": "prettier --write"
+	}
+}
