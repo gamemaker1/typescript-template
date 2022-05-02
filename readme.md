@@ -29,6 +29,8 @@ It includes:
   [`lint-staged`](https://github.com/okonet/lint-staged#readme) for linting
   staged files before committing them.
 - [`pnpm`](https://pnpm.io/) for fast and efficient package management.
+- [`wireit`](https://github.com/google/wireit) for smarter and more efficient
+  npm scripts.
 - a [`contributing.md`](./contributing.md), [`changelog.md`](./changelog.md),
   [`license.md`](./license.md) and [`readme.md`](./readme.md) file.
 
