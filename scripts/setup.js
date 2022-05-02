@@ -58,6 +58,9 @@ const { authorName, packageName, repository } = await enquirer.prompt([
 			'Enter the name of the repository on GitHub (in the format `username/repository-name`)',
 	},
 ])
+
+console.info(chalk.bold.cyan('\nSetting up your new project...'))
+
 const replacements = [
 	{
 		from: /Vedant K/g,
@@ -82,8 +85,10 @@ for (const replacement of replacements)
 // Delete some stuff from `package.json`
 const packageJson = json.parse(await readFile('./package.json'))
 // Delete the setup script's dependencies in the `package.json` file
-for (const setupDep of ['chalk', 'enquirer', 'execa', 'replace-in-file'])
+for (const setupDep of ['chalk', 'enquirer', 'execa', 'replace-in-file']) {
 	delete packageJson.devDependencies[setupDep]
+	await execa('pnpm', ['remove', setupDep])
+}
 // Also replace the `prepare` script with the actual version
 packageJson.scripts.prepare = packageJson.scripts['actual-prepare']
 // Delete the now-unneeded scripts
@@ -91,13 +96,13 @@ delete packageJson.scripts['actual-prepare']
 // Now write this data back
 await writeFile('./package.json', json.stringify(packageJson, undefined, '\t'))
 
-// Re-run `pnpm install`
-await execa('pnpm', ['install'])
+// Initialize a git repository
+await execa('git', ['init'])
 
 // Print out we're done!
 console.info(
 	chalk.bold.green(
-		'\nDone setting up! Now you can go write some amazing code :D\n',
+		'Done setting up! Now you can go write some amazing code :D\n',
 	),
 )
 
