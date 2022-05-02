@@ -87,7 +87,6 @@ for (const setupDep of ['chalk', 'enquirer', 'execa', 'replace-in-file'])
 // Also replace the `prepare` script with the actual version
 packageJson.scripts.prepare = packageJson.scripts['actual-prepare']
 // Delete the now-unneeded scripts
-delete packageJson.scripts.setup
 delete packageJson.scripts['actual-prepare']
 // Now write this data back
 await writeFile('./package.json', json.stringify(packageJson, undefined, '\t'))

@@ -20,26 +20,91 @@
 		"tsconfig.json",
 		"pnpm-lock.yaml"
 	],
+	"engines": {
+		"node": "18",
+		"pnpm": "7"
+	},
 	"scripts": {
-		"clean": "del-cli dist/ coverage/ *.log *.tmp *.tgz *.bak",
-		"build:lib": "esbuild --bundle --platform=node --format=esm --outfile=dist/index.js source/index.ts",
-		"build:types": "dts-bundle-generator --out-file=dist/index.d.ts source/index.ts",
-		"compile": "run-s clean build:*",
-		"lint:code": "xo",
-		"lint:rest": "prettier --check --ignore-path=.gitignore .",
+		"build:lib": "wireit",
+		"build:dts": "wireit",
+		"compile": "run-s build:*",
+		"lint:code": "wireit",
+		"lint:rest": "wireit",
 		"lint": "run-s lint:*",
-		"autofix:code": "xo --fix",
-		"autofix:rest": "prettier --write --ignore-path=.gitignore .",
-		"autofix": "run-s autofix:*",
-		"test:lib": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" jest",
-		"test": "run-s test:*",
+		"format:code": "wireit",
+		"format:rest": "wireit",
+		"format": "run-s format:*",
+		"test": "wireit",
+		"clean": "del-cli dist/ coverage/ *.log *.tmp *.tgz *.bak",
 		"pre-commit": "lint-staged",
 		"prepare": "node scripts/setup.js && husky install config/husky",
 		"actual-prepare": "run-s compile && husky install config/husky"
 	},
-	"engines": {
-		"node": "18",
-		"pnpm": "7"
+	"wireit": {
+		"build:lib": {
+			"command": "tsup source/index.ts",
+			"files": [
+				"source/**/*.ts"
+			],
+			"output": [
+				"dist/index.js"
+			],
+			"packageLocks": [
+				"pnpm-lock.yaml"
+			],
+			"clean": "if-file-deleted"
+		},
+		"build:dts": {
+			"command": "dts-bundle-generator --out-file=dist/index.d.ts source/index.ts",
+			"files": [
+				"source/**/*.ts"
+			],
+			"output": [
+				"dist/index.d.ts"
+			],
+			"packageLocks": [
+				"pnpm-lock.yaml"
+			],
+			"clean": "if-file-deleted"
+		},
+		"lint:code": {
+			"command": "xo",
+			"files": [
+				"source/**/*.ts",
+				"tests/**/*.ts"
+			]
+		},
+		"lint:rest": {
+			"command": "prettier --check --ignore-path=.gitignore .",
+			"files": [
+				".github/**/*.{yaml,json,md}",
+				"**/*.{yaml,json,md}"
+			]
+		},
+		"format:code": {
+			"command": "xo --fix",
+			"files": [
+				"source/**/*.ts",
+				"tests/**/*.ts"
+			]
+		},
+		"format:rest": {
+			"command": "prettier --write --ignore-path=.gitignore .",
+			"files": [
+				".github/**/*.{yaml,json,md}",
+				"**/*.{yaml,json,md}"
+			]
+		},
+		"test": {
+			"command": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" jest",
+			"files": [
+				"tests/**/*.ts"
+			],
+			"output": [],
+			"dependencies": [
+				"compile"
+			]
+		}
 	},
 	"devDependencies": {
 		"@types/jest": "^27.0.3",
@@ -49,7 +114,6 @@
 		"del-cli": "^4.0.1",
 		"dts-bundle-generator": "6.9.0",
 		"enquirer": "^2.3.6",
-		"esbuild": "0.14.38",
 		"execa": "^6.0.0",
 		"husky": "^7.0.4",
 		"jest": "28.0.3",
@@ -61,8 +125,15 @@
 		"ts-jest": "28.0.0-next.3",
 		"ts-node": "10.7.0",
 		"tsconfig-paths": "3.14.1",
+		"tsup": "^5.12.6",
 		"typescript": "4.6.4",
+		"wireit": "^0.3.1",
 		"xo": "0.48.0"
+	},
+	"tsup": {
+		"format": [
+			"esm"
+		]
 	},
 	"xo": {
 		"prettier": true,

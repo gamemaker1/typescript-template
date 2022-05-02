@@ -8,7 +8,7 @@ on: [push, pull_request]
 jobs:
   lint:
     name: Lint
-    runs-on: linux-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
@@ -22,6 +22,8 @@ jobs:
           node-version: 18
           registry-url: 'https://registry.npmjs.org/'
           cache: 'pnpm'
+      - name: Use `wireit` caching
+        uses: google/wireit@setup-github-actions-caching/v1
       - name: Check for lint/formatting errors
         run: |
           pnpm install
@@ -31,7 +33,7 @@ jobs:
     strategy:
       matrix:
         node-version: [14, 16, 18]
-        os: [linux-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     continue-on-error: true
     steps:
@@ -47,6 +49,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org/'
           cache: 'pnpm'
+      - name: Use `wireit` caching
+        uses: google/wireit@setup-github-actions-caching/v1
       - name: Run library tests
         run: |
           pnpm install
@@ -69,6 +73,8 @@ jobs:
           node-version: 18
           registry-url: 'https://registry.npmjs.org/'
           cache: 'pnpm'
+      - name: Use `wireit` caching
+        uses: google/wireit@setup-github-actions-caching/v1
       - name: Install dependencies
         run: pnpm install
       - name: Publish package to NPM

@@ -4,6 +4,8 @@
 node_modules/
 dist/
 coverage/
+.wireit/
+.cache/
 
 .idea/
 .vscode/
