@@ -12,6 +12,17 @@ import { execa } from 'execa'
 
 const json = JSON
 
+// Exit if we are in the CI environment
+if (process.env.CI) {
+	// Delete this script
+	await deleteDirectory('./scripts/', {
+		recursive: true,
+		force: true,
+	})
+
+	process.exit(0) // eslint-disable-line unicorn/no-process-exit
+}
+
 // Some constants
 const { stdout: gitUsername } = await execa('git', [
 	'config',
@@ -25,17 +36,6 @@ const sourceFiles = [
 	'.github/**/*.{md,yaml}',
 	'*.{md,json,yaml}',
 ]
-
-// Exit if we are in the CI environment
-if (process.env.CI) {
-	// Delete this script
-	await deleteDirectory('./scripts/', {
-		recursive: true,
-		force: true,
-	})
-
-	process.exit(0) // eslint-disable-line unicorn/no-process-exit
-}
 
 // The text to replace
 const { authorName, packageName, repository } = await enquirer.prompt([
