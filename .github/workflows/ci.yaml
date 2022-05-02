@@ -33,6 +33,7 @@ jobs:
         node-version: [14, 16, 18]
         os: [linux-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    continue-on-error: true
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
